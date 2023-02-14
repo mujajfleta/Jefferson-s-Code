@@ -1,0 +1,97 @@
+import pandas
+from matplotlib import pyplot as plt
+import numpy as np
+import collections
+from collections import Counter
+import random
+import string
+import matplotlib.pyplot
+
+alphabet = 'abcdefghijklmnopqrstuvwxyz'
+key = 'zyxwvutsrqponmlkjihgfedcba'
+print('Press 1 to Encrypt your text\nPress 2 to Decrypt your text.')
+num = int(input())
+print('Your text?')
+lines = []
+while True:
+    line = input()
+    if line:
+        lines.append(line)
+    else:
+        break
+    plaintext = '\n'.join(lines)
+
+print("\nFrequency analysis of the characters in the given plaintext: ") #finding the frequency
+new_plaintext = plaintext.translate(str.maketrans('', '', string.punctuation))
+counts =collections.Counter(new_plaintext)
+total = sum(counts.values())
+for character, count in counts.items():
+    if(character!=" "):
+        print('{:<2} - {:>6.2f}%'.format(repr(character)[1:-1], (count/total) * 100)," - ",count)
+
+max_frequency = {}
+for i in new_plaintext:
+    if i in max_frequency:
+        max_frequency[i] += 1
+    else:
+        max_frequency[i] = 1
+max_result = max(max_frequency, key = max_frequency.get)
+print("\nThe most repeated character:",max_result)
+"""
+string=plaintext
+for i in range(0, len(string)):
+    count = 1;
+    for j in range(i+1, len(string)):
+        if(string[i] == string[j] and string[i] != ' '):
+            count = count + 1;
+            string = string[:j] + '0' + string[j+1:];
+
+    if(count > 1 and string[i] != '0'):
+        print(string[i]," - ",count); 
+"""
+
+def makeKey(alphabet):
+    alphabet = list(alphabet)
+    random.shuffle(alphabet)
+    return ''.join(alphabet)
+
+
+def encrypt(plaintext, key, alphabet):
+    keyMap = dict(zip(alphabet, key))
+    return ''.join(keyMap.get(c.lower(), c) for c in plaintext)
+
+
+def decrypt(cipher, key, alphabet):
+    keyMap = dict(zip(key, alphabet))
+    return ''.join(keyMap.get(c.lower(), c) for c in cipher)
+
+
+cipher = encrypt(plaintext, key, alphabet)
+
+if num == 1:
+    print('\nThe Encrypted text:')
+    print(cipher)
+elif 2 == num:
+    print('\nThe Decrypted text:')
+    print(cipher)
+
+print('\nPlaintext:')
+print(plaintext)
+
+
+if(character!=" "):   #histogrami
+    letter_counts=Counter(new_plaintext)
+    df=pandas.DataFrame.from_dict(letter_counts, orient='index')
+    df.plot(kind='bar')
+plt.show() # Shows plot
+
+
+x = [random.gauss(3,1) for _ in range(400)]
+y = [random.gauss(4,2) for _ in range(400)]
+
+bins = np.linspace(-10, 10, 100)
+
+plt.hist(x, bins, alpha=0.5, label='given text')
+plt.hist(y, bins, alpha=0.5, label='english language')
+plt.legend(loc='upper right')
+plt.show()
